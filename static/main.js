@@ -1,12 +1,9 @@
 function toggleDetails(element) {
     const details = element.nextElementSibling;
-    if (details.style.display === "block") {
-        details.style.display = "none";
-        element.querySelector('.arrow').textContent = '▶';
-    } else {
-        details.style.display = "block";
-        element.querySelector('.arrow').textContent = '▼';
-    }
+    const icon = element.querySelector('.arrow i');
+    details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    icon.classList.toggle('fa-caret-right');
+    icon.classList.toggle('fa-caret-down');
 }
 
 async function updateData() {

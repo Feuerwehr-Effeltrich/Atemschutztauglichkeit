@@ -18,7 +18,7 @@
         {% for person in people %}
         <div class="person-entry {{ person.overall_status }}">
             <div class="summary" onclick="toggleDetails(this)">
-                <span class="arrow">▶</span>
+                <span class="arrow"><i class="fas fa-caret-right fa-fw"></i></span>
                 <span class="name">{{ person.vorname }} {{ person.name }}</span>
                 <span class="status-icon">
                     {% if person.overall_status == "green" %}
