@@ -1,7 +1,7 @@
 from download import download
 from parse import parse, Person, ParsedData
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import schedule
@@ -26,6 +26,12 @@ class PersonStatus:
 
 
 app = FastAPI()
+
+@app.middleware("http")
+async def add_noindex_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Robots-Tag"] = "noindex, nofollow"
+    return response
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -151,6 +157,10 @@ def get_processed_data() -> list[PersonStatus]:
 @app.get("/api.json")
 def api():
     return {"people": get_processed_data(), "data_age": data_age, "last_update_timestamp": last_update_timestamp}
+
+@app.get("/robots.txt", include_in_schema=False)
+def robots_txt():
+    return FileResponse("static/robots.txt")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
