@@ -1,6 +1,9 @@
+.env
+README.md
 .vscode/
 .venv/
 __pycache__/
 .states/
 .env
 *.xlsx
+compose.yml
