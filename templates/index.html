@@ -7,11 +7,60 @@
     <title>Atemschutz Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <h1>Dashboard Atemschutz-Tauglichkeit<br>FFW Effeltrich</h1>
-    <div id="data"></div>
+
+    <div id="people-list">
+        {% for person in people %}
+        <div class="person-entry {{ person.overall_status }}">
+            <div class="summary" onclick="toggleDetails(this)">
+                <span class="arrow">▶</span>
+                <span class="name">{{ person.vorname }} {{ person.name }}</span>
+                <span class="status-icon">
+                    {% if person.overall_status == "green" %}
+                    <i class="fas fa-check-circle green"></i>
+                    {% elif person.overall_status == "yellow" %}
+                    <i class="fas fa-exclamation-triangle yellow"></i>
+                    {% else %}
+                    <i class="fas fa-times-circle red"></i>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="details">
+                <p class="{{ person.untersuchung_status }}-text">
+                    <span class="status-icon"><i class="fas fa-file-alt {{ person.untersuchung_status }}"></i></span>
+                    Untersuchung bis {% if person.untersuchung %}{{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                </p>
+                <p class="{{ person.unterweisung_status }}-text">
+                    <span class="status-icon"><i class="fas fa-pencil-alt {{ person.unterweisung_status }}"></i></span>
+                    Unterweisung für {% if person.unterweisung %}{{ person.unterweisung.year - 1 }}{% else %}N/A{% endif %}
+                </p>
+                <p class="{{ person.anlage_status }}-text">
+                    <span class="status-icon"><i class="fas fa-dumbbell {{ person.anlage_status }}"></i></span>
+                    Belastungsübung von {% if person.anlage %}{{ person.anlage.year - 1 }}{% else %}N/A{% endif %}
+                </p>
+                <p class="{{ person.agtUebung_status }}-text">
+                    <span class="status-icon"><i class="fas fa-fire-extinguisher {{ person.agtUebung_status }}"></i></span>
+                    Übung/Einsatz bis {% if person.agtUebung %}{{ person.agtUebung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="update-button" onclick="updateData()">Daten aktualisieren</button>
+
+    <div class="update-info">
+        {% if data_age %}
+        <p>{{ data_age }}</p>
+        {% endif %}
+        {% if last_update_timestamp %}
+        <p>{{ last_update_timestamp }}</p>
+        {% endif %}
+    </div>
 
     <script src="/static/main.js"></script>
 </body>

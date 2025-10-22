@@ -1,13 +1,173 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    background-color: #fafafa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    overflow-y: scroll; /* Prevent layout shift */
 }
 
 h1 {
-    color: #333;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
 }
 
-#data {
+#people-list {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.person-entry {
+    border-bottom: 1px solid #eee;
+}
+
+.person-entry:last-child {
+    border-bottom: none;
+}
+
+.summary {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fdfdfd;
+    transition: background-color 0.2s ease;
+}
+
+.summary:hover {
+    background-color: #f0f0f0;
+}
+
+.summary .arrow {
+    margin-right: 10px;
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+.summary .name {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.status-icon i {
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.green {
+    color: #27ae60;
+}
+
+.yellow {
+    color: #f39c12;
+}
+
+.red {
+    color: #e74c3c;
+}
+
+.details {
+    display: none;
+    padding: 10px 20px 15px 40px;
+    background-color: #f9f9f9;
+    border-top: 1px dashed #eee;
+}
+
+.details p {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+}
+
+.details p .status-icon i {
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.details p.green-text {
+    color: #27ae60;
+}
+
+.details p.yellow-text {
+    color: #f39c12;
+}
+
+.details p.red-text {
+    color: #e74c3c;
+}
+
+#update-button {
+    display: block;
+    width: fit-content;
+    margin: 30px auto 0 auto;
+    padding: 12px 25px;
+    font-size: 1em;
+    color: #ffffff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#update-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+#update-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+.update-info {
+    text-align: center;
     margin-top: 20px;
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .summary {
+        padding: 12px 15px;
+    }
+
+    .summary .name {
+        font-size: 1em;
+    }
+
+    .status-icon i {
+        font-size: 1em;
+    }
+
+    .details {
+        padding: 8px 15px 10px 30px;
+    }
+
+    .details p {
+        font-size: 0.9em;
+    }
+
+    #update-button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
 }
