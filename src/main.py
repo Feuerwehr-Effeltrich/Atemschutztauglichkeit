@@ -108,8 +108,6 @@ def get_processed_data() -> list[PersonStatus]:
         if p.anlage:
             if p.anlage.year >= today.year:
                 anlage_status = "green"
-            elif today.year - p.anlage.year == 1:
-                anlage_status = "yellow"
             else:
                 anlage_status = "red"
         else:

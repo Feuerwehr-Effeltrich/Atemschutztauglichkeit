@@ -33,7 +33,7 @@
             <div class="details">
                 <p class="{{ person.untersuchung_status }}-text">
                     <span class="status-icon"><i class="fas fa-file-alt {{ person.untersuchung_status }}"></i></span>
-                    Untersuchung bis {% if person.untersuchung %}{{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                    G26.3 bis {% if person.untersuchung %}{{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.unterweisung_status }}-text">
                     <span class="status-icon"><i class="fas fa-pencil-alt {{ person.unterweisung_status }}"></i></span>
@@ -45,7 +45,7 @@
                 </p>
                 <p class="{{ person.agtUebung_status }}-text">
                     <span class="status-icon"><i class="fas fa-fire-extinguisher {{ person.agtUebung_status }}"></i></span>
-                    Übung/Einsatz bis {% if person.agtUebung %}{{ person.agtUebung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                    Einsatz(übung) bis {% if person.agtUebung %}{{ person.agtUebung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
             </div>
         </div>
