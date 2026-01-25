@@ -33,19 +33,19 @@
             <div class="details">
                 <p class="{{ person.untersuchung_status }}-text">
                     <span class="status-icon"><i class="fas fa-file-alt {{ person.untersuchung_status }}"></i></span>
-                    G26.3 bis {% if person.untersuchung %}{{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                    G26.3 {% if person.untersuchung %}bis {{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.unterweisung_status }}-text">
                     <span class="status-icon"><i class="fas fa-pencil-alt {{ person.unterweisung_status }}"></i></span>
-                    Unterweisung für {% if person.unterweisung %}{{ person.unterweisung.year - 1 }}{% else %}N/A{% endif %}
+                    Unterweisung {% if person.unterweisung %}für {{ person.unterweisung.year - 1 }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.anlage_status }}-text">
                     <span class="status-icon"><i class="fas fa-dumbbell {{ person.anlage_status }}"></i></span>
-                    Belastungsübung von {% if person.anlage %}{{ person.anlage.year - 1 }}{% else %}N/A{% endif %}
+                    Belastungsübung {% if person.anlage %}von {{ person.anlage.year - 1 }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.agtUebung_status }}-text">
                     <span class="status-icon"><i class="fas fa-fire-extinguisher {{ person.agtUebung_status }}"></i></span>
-                    Einsatz(übung) bis {% if person.agtUebung %}{{ person.agtUebung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
+                    Einsatz(übung) {% if person.agtUebung %}von {{ person.agtUebung.replace(year=person.agtUebung.year - 1).strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
             </div>
         </div>

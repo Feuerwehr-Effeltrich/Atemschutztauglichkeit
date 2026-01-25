@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import copy
 from typing import Optional
 
+
 @dataclass
 class PersonStatus:
     name: str
@@ -27,11 +28,14 @@ class PersonStatus:
 
 app = FastAPI()
 
+
 @app.middleware("http")
 async def add_noindex_header(request: Request, call_next):
     response = await call_next(request)
     response.headers["X-Robots-Tag"] = "noindex, nofollow"
     return response
+
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -39,6 +43,7 @@ __xlsx = "Tauglichkeit.xlsx"
 finding: list[Person]
 data_age: Optional[str] = None
 last_update_timestamp: Optional[datetime] = None
+
 
 @app.post("/update")
 def update():
@@ -48,8 +53,11 @@ def update():
     finding = parsed_data.people
     data_age = parsed_data.data_age
     last_update_timestamp = datetime.now()
+
+
 update()
 schedule.every().day.at("02:00").do(update)
+
 
 def format_timedelta(td: timedelta) -> str:
     seconds = int(td.total_seconds())
@@ -64,15 +72,9 @@ def format_timedelta(td: timedelta) -> str:
     days = hours // 24
     return f"{days} Tage"
 
+
 def get_processed_data() -> list[PersonStatus]:
     people = copy.deepcopy(finding)
-
-    # Add 15 days to each date
-    for person in people:
-        if person.untersuchung: person.untersuchung += timedelta(days=15)
-        if person.unterweisung: person.unterweisung += timedelta(days=15)
-        if person.anlage: person.anlage += timedelta(days=15)
-        if person.agtUebung: person.agtUebung += timedelta(days=15)
 
     people_status: list[PersonStatus] = []
     today = datetime.now()
@@ -82,14 +84,19 @@ def get_processed_data() -> list[PersonStatus]:
 
         # Untersuchung status
         if p.untersuchung:
-            if p.untersuchung.year > today.year or (p.untersuchung.year == today.year and p.untersuchung.month >= today.month):
+            if p.untersuchung.year > today.year or (
+                p.untersuchung.year == today.year and p.untersuchung.month > today.month
+            ):
                 untersuchung_status = "green"
-            elif p.untersuchung.year == today.year and today.month - p.untersuchung.month <= 1:
+            elif (
+                p.untersuchung.year == today.year
+                and today.month == p.untersuchung.month
+            ):
                 untersuchung_status = "yellow"
             else:
                 untersuchung_status = "red"
         else:
-            untersuchung_status = "red" # Missing date is critical
+            untersuchung_status = "red"  # Missing date is critical
         statuses.append(untersuchung_status)
 
         # Unterweisung status
@@ -101,29 +108,35 @@ def get_processed_data() -> list[PersonStatus]:
             else:
                 unterweisung_status = "red"
         else:
-            unterweisung_status = "red" # Missing date is critical
+            unterweisung_status = "red"  # Missing date is critical
         statuses.append(unterweisung_status)
 
         # Belastungsübung (anlage) status
         if p.anlage:
             if p.anlage.year >= today.year:
                 anlage_status = "green"
+            # No yellow, it's normal to do this at a later day in the year
             else:
                 anlage_status = "red"
         else:
-            anlage_status = "red" # Missing date is critical
+            anlage_status = "red"  # Missing date is critical
         statuses.append(anlage_status)
 
         # Übung/Einsatz (agtUebung) status
         if p.agtUebung:
-            if p.agtUebung >= today:
+            # For better planning: mark as yellow when we are near the end of the year and training is still due
+            if (
+                p.agtUebung.year > today.year
+                or p.agtUebung.year == today.year
+                and today.month < 10
+            ):
                 agtUebung_status = "green"
-            elif (p.agtUebung + timedelta(days=180)).year >= today.year:
+            elif p.agtUebung.year == today.year:
                 agtUebung_status = "yellow"
             else:
                 agtUebung_status = "red"
         else:
-            agtUebung_status = "red" # Missing date is critical
+            agtUebung_status = "red"  # Missing date is critical
         statuses.append(agtUebung_status)
 
         if "red" in statuses:
@@ -133,38 +146,57 @@ def get_processed_data() -> list[PersonStatus]:
         else:
             overall_status = "green"
 
-        people_status.append(PersonStatus(
-            p.name,
-            p.vorname,
-            p.untersuchung,
-            untersuchung_status,
-            p.unterweisung,
-            unterweisung_status,
-            p.anlage,
-            anlage_status,
-            p.agtUebung,
-            agtUebung_status,
-            overall_status
-        ))
+        people_status.append(
+            PersonStatus(
+                p.name,
+                p.vorname,
+                p.untersuchung,
+                untersuchung_status,
+                p.unterweisung,
+                unterweisung_status,
+                p.anlage,
+                anlage_status,
+                p.agtUebung,
+                agtUebung_status,
+                overall_status,
+            )
+        )
 
     status_order = {"green": 0, "yellow": 1, "red": 2}
     people_status.sort(key=lambda x: (status_order[x.overall_status], x.name))
 
     return people_status
 
+
 @app.get("/api.json")
 def api():
-    return {"people": get_processed_data(), "data_age": data_age, "last_update_timestamp": last_update_timestamp}
+    return {
+        "people": get_processed_data(),
+        "data_age": data_age,
+        "last_update_timestamp": last_update_timestamp,
+    }
+
 
 @app.get("/robots.txt", include_in_schema=False)
 def robots_txt():
     return FileResponse("static/robots.txt")
+
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     formatted_last_update = None
     if last_update_timestamp:
         time_diff = datetime.now() - last_update_timestamp
-        formatted_last_update = f"zuletzt aktualisiert vor {format_timedelta(time_diff)}"
+        formatted_last_update = (
+            f"zuletzt aktualisiert vor {format_timedelta(time_diff)}"
+        )
 
-    return templates.TemplateResponse("index.html", {"request": request, "people": get_processed_data(), "data_age": data_age, "last_update_timestamp": formatted_last_update})
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "people": get_processed_data(),
+            "data_age": data_age,
+            "last_update_timestamp": formatted_last_update,
+        },
+    )
