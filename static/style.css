@@ -57,21 +57,48 @@ h1 {
     font-size: 1.1em;
 }
 
-.status-icon i {
+/* Overall Status Colors for Name */
+.summary .name.green { color: #27ae60; }
+.summary .name.yellow { color: #f39c12; }
+.summary .name.red { color: #e74c3c; }
+
+/* Status Colors for Icons */
+.green { color: #27ae60; }
+.yellow { color: #f39c12; }
+.red { color: #e74c3c; }
+
+.overall-status {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    width: 30px;
+    justify-content: center;
+}
+
+.overall-status i {
     font-size: 1.2em;
-    margin-left: 10px;
 }
 
-.green {
-    color: #27ae60;
+.requirements-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.yellow {
-    color: #f39c12;
+.requirements-icons i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.2em;
 }
 
-.red {
-    color: #e74c3c;
+.requirements-icons .separator {
+    color: #eee;
+    font-size: 0.9em;
+    font-weight: 100;
+}
+
+.green-tint {
+    color: #e6f7e6; /* Extremely subtle green tint */
 }
 
 .details {
@@ -88,22 +115,14 @@ h1 {
     font-size: 0.95em;
 }
 
-.details p .status-icon i {
+.details p i {
     font-size: 1em;
     margin-right: 10px;
 }
 
-.details p.green-text {
-    color: #27ae60;
-}
-
-.details p.yellow-text {
-    color: #f39c12;
-}
-
-.details p.red-text {
-    color: #e74c3c;
-}
+.details p.green-text { color: #27ae60; }
+.details p.yellow-text { color: #f39c12; }
+.details p.red-text { color: #e74c3c; }
 
 #update-button {
     display: block;
@@ -136,6 +155,36 @@ h1 {
     color: #7f8c8d;
 }
 
+.legend {
+    max-width: 800px;
+    margin: 30px auto 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: left;
+}
+
+.legend h2 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.legend p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+}
+
+.legend p i {
+    width: 25px;
+    margin-right: 10px;
+    text-align: center;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     body {
@@ -154,8 +203,8 @@ h1 {
         font-size: 1em;
     }
 
-    .status-icon i {
-        font-size: 1em;
+    .overall-status {
+        margin-right: 15px;
     }
 
     .details {

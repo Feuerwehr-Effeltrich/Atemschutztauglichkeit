@@ -16,11 +16,10 @@
 
     <div id="people-list">
         {% for person in people %}
-        <div class="person-entry {{ person.overall_status }}">
+        <div class="person-entry">
             <div class="summary" onclick="toggleDetails(this)">
                 <span class="arrow"><i class="fas fa-caret-right fa-fw"></i></span>
-                <span class="name">{{ person.vorname }} {{ person.name }}</span>
-                <span class="status-icon">
+                <span class="overall-status">
                     {% if person.overall_status == "green" %}
                     <i class="fas fa-check-circle green"></i>
                     {% elif person.overall_status == "yellow" %}
@@ -29,22 +28,32 @@
                     <i class="fas fa-times-circle red"></i>
                     {% endif %}
                 </span>
+                <span class="name {{ person.overall_status }}">{{ person.vorname }} {{ person.name }}</span>
+                <span class="requirements-icons">
+                    <i class="fas fa-file-alt {% if person.untersuchung_status == 'green' %}green-tint{% else %}{{ person.untersuchung_status }}{% endif %}"></i>
+                    <span class="separator">|</span>
+                    <i class="fas fa-pencil-alt {% if person.unterweisung_status == 'green' %}green-tint{% else %}{{ person.unterweisung_status }}{% endif %}"></i>
+                    <span class="separator">|</span>
+                    <i class="fas fa-dumbbell {% if person.anlage_status == 'green' %}green-tint{% else %}{{ person.anlage_status }}{% endif %}"></i>
+                    <span class="separator">|</span>
+                    <i class="fas fa-fire-extinguisher {% if person.agtUebung_status == 'green' %}green-tint{% else %}{{ person.agtUebung_status }}{% endif %}"></i>
+                </span>
             </div>
             <div class="details">
                 <p class="{{ person.untersuchung_status }}-text">
-                    <span class="status-icon"><i class="fas fa-file-alt {{ person.untersuchung_status }}"></i></span>
+                    <i class="fas fa-file-alt {{ person.untersuchung_status }}"></i>
                     G26.3 {% if person.untersuchung %}bis {{ person.untersuchung.strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.unterweisung_status }}-text">
-                    <span class="status-icon"><i class="fas fa-pencil-alt {{ person.unterweisung_status }}"></i></span>
+                    <i class="fas fa-pencil-alt {{ person.unterweisung_status }}"></i>
                     Unterweisung {% if person.unterweisung %}für {{ person.unterweisung.year - 1 }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.anlage_status }}-text">
-                    <span class="status-icon"><i class="fas fa-dumbbell {{ person.anlage_status }}"></i></span>
+                    <i class="fas fa-dumbbell {{ person.anlage_status }}"></i>
                     Belastungsübung {% if person.anlage %}von {{ person.anlage.year - 1 }}{% else %}N/A{% endif %}
                 </p>
                 <p class="{{ person.agtUebung_status }}-text">
-                    <span class="status-icon"><i class="fas fa-fire-extinguisher {{ person.agtUebung_status }}"></i></span>
+                    <i class="fas fa-fire-extinguisher {{ person.agtUebung_status }}"></i>
                     Einsatz(übung) {% if person.agtUebung %}von {{ person.agtUebung.replace(year=person.agtUebung.year - 1).strftime('%m/%Y') }}{% else %}N/A{% endif %}
                 </p>
             </div>
@@ -53,6 +62,20 @@
     </div>
 
     <button id="update-button" onclick="updateData()">Daten aktualisieren</button>
+
+    <div class="legend">
+        <h2>Legende</h2>
+        <div style="margin-bottom: 15px;">
+            <p><i class="fas fa-check-circle green"></i> Alles gültig</p>
+            <p><i class="fas fa-exclamation-triangle yellow"></i> Etwas fällig oder bald fällig</p>
+            <p><i class="fas fa-times-circle red"></i> Mindestens eine Voraussetzung abgelaufen</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        <p><i class="fas fa-file-alt"></i> Ärztliche Untersuchung (G26.3)</p>
+        <p><i class="fas fa-pencil-alt"></i> Jährliche Unterweisung</p>
+        <p><i class="fas fa-dumbbell"></i> Belastungsübung</p>
+        <p><i class="fas fa-fire-extinguisher"></i> Einsatz(übung)</p>
+    </div>
 
     <div class="update-info">
         {% if data_age %}
