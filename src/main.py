@@ -84,17 +84,14 @@ def get_processed_data() -> list[PersonStatus]:
 
         # Untersuchung status
         if p.untersuchung:
-            if p.untersuchung.year > today.year or (
-                p.untersuchung.year == today.year and p.untersuchung.month > today.month
-            ):
-                untersuchung_status = "green"
-            elif (
-                p.untersuchung.year == today.year
-                and today.month == p.untersuchung.month
-            ):
+            # We don't get the exact day, so approximate to middle of month
+            if p.untersuchung + timedelta(days=15) < today:
+                untersuchung_status = "red"
+            # For better planning: mark as yellow when due in the next 3 months
+            elif p.untersuchung <= today + timedelta(days=90):
                 untersuchung_status = "yellow"
             else:
-                untersuchung_status = "red"
+                untersuchung_status = "green"
         else:
             untersuchung_status = "red"  # Missing date is critical
         statuses.append(untersuchung_status)
